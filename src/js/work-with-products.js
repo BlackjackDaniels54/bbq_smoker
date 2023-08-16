@@ -1,9 +1,10 @@
 export async function interactWithProducts() {
   
       const toNum = (str) => parseFloat(str);
+
       const totalWeight = (amount, weight) => {
         const totalWeight = amount * toNum(weight);
-        if(totalWeight > 1000){
+        if(totalWeight >= 1000){
           return `${totalWeight / 1000} кг.`
         }else {
           return `${totalWeight} г.`
