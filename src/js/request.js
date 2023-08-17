@@ -74,12 +74,15 @@ export function Success() {
           }, 3500);
 }
 
-export function Danger() {
+export function Danger(message) {
     
     const AlertDanger = document.querySelector('.alert-danger__container'),
+          textError = AlertDanger.querySelector('.innerErrorText'),
           mainContainer = document.querySelector('.popup__container');
-
+          console.log(textError)
           AlertDanger.classList.remove('hide-smooth-animation');
+          textError.innerText = message;
+          console.log(message)
 
           setTimeout(function() {
             mainContainer.scrollTo({
@@ -90,7 +93,7 @@ export function Danger() {
 
           setTimeout(function() {
             AlertDanger.classList.add('hide-smooth-animation');
-          }, 3500);
+          }, 5500);
 
 }
 
@@ -105,7 +108,12 @@ export function clearLocalStorage() {
     popupCost.innerHTML = '0 грн';
     popupProductList.innerHTML = null;
     const cleardata = {"products": []};
-    const clearUser = {};
+    const clearUser = {
+      name: '',
+      phone: '', 
+      address: '',
+      comment: ''
+  };
     localStorage.setItem("cart", JSON.stringify(cleardata));
     localStorage.setItem("user", JSON.stringify(clearUser));
     

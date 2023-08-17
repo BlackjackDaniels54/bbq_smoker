@@ -48,7 +48,16 @@ export function SendData(){
                         form.reset();
                     }).catch(function(error){
                         hideSpinner();
-                        Danger();
+                        if (error.response && error.response.status === 400 
+                            && error.response.data
+                            && error.response.data.error ) {
+                                
+                            console.log(error.response.data.error);
+
+                            Danger("" + error.response.data.error);
+                        } else {
+                            Danger('Error 500. Помилка серверу');
+                        }
                     }) 
             }
 

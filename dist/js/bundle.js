@@ -201,12 +201,15 @@ function Success() {
           }, 3500);
 }
 
-function Danger() {
+function Danger(message) {
     
     const AlertDanger = document.querySelector('.alert-danger__container'),
+          textError = AlertDanger.querySelector('.innerErrorText'),
           mainContainer = document.querySelector('.popup__container');
-
+          console.log(textError)
           AlertDanger.classList.remove('hide-smooth-animation');
+          textError.innerText = message;
+          console.log(message)
 
           setTimeout(function() {
             mainContainer.scrollTo({
@@ -217,7 +220,7 @@ function Danger() {
 
           setTimeout(function() {
             AlertDanger.classList.add('hide-smooth-animation');
-          }, 3500);
+          }, 5500);
 
 }
 
@@ -232,7 +235,12 @@ function clearLocalStorage() {
     popupCost.innerHTML = '0 грн';
     popupProductList.innerHTML = null;
     const cleardata = {"products": []};
-    const clearUser = {};
+    const clearUser = {
+      name: '',
+      phone: '', 
+      address: '',
+      comment: ''
+  };
     localStorage.setItem("cart", JSON.stringify(cleardata));
     localStorage.setItem("user", JSON.stringify(clearUser));
     
@@ -315,7 +323,16 @@ function SendData(){
                         form.reset();
                     }).catch(function(error){
                         hideSpinner();
-                        (0,_request__WEBPACK_IMPORTED_MODULE_0__.Danger)();
+                        if (error.response && error.response.status === 400 
+                            && error.response.data
+                            && error.response.data.error ) {
+                                
+                            console.log(error.response.data.error);
+
+                            (0,_request__WEBPACK_IMPORTED_MODULE_0__.Danger)("" + error.response.data.error);
+                        } else {
+                            (0,_request__WEBPACK_IMPORTED_MODULE_0__.Danger)('Error 500. Помилка серверу');
+                        }
                     }) 
             }
 
@@ -640,8 +657,9 @@ async function interactWithProducts() {
           const savedCart = JSON.parse(localStorage.getItem("cart"));
           myCart.products = savedCart.products; 
           
+          console.log(myCart.products)
           let isTrue = myCart.products.some(function(obj) {
-              return IdCart == obj.uniqueId;
+              return IdCart == obj.product.id;
           })
           if(!isTrue){
             myCart.addProduct(product);

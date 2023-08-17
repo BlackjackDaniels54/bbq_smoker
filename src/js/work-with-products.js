@@ -133,8 +133,9 @@ export async function interactWithProducts() {
           const savedCart = JSON.parse(localStorage.getItem("cart"));
           myCart.products = savedCart.products; 
           
+          console.log(myCart.products)
           let isTrue = myCart.products.some(function(obj) {
-              return IdCart == obj.uniqueId;
+              return IdCart == obj.product.id;
           })
           if(!isTrue){
             myCart.addProduct(product);
