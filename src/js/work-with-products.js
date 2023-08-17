@@ -43,16 +43,14 @@ export async function interactWithProducts() {
           this.products.splice(index, 1);
         }
         PlusAmount(index) {
-          
-            this.products[index].amount++;
-            this.products[index].totalCount = this.products[index].amount * this.products[index].price + ' грн'; 
-          
-          
+            console.log(this.products[index])
+            this.products[index].quantity++;
+            this.products[index].totalCount = toCurrency(this.products[index].quantity * toNum(this.products[index].product.price)); 
         }
         MinusAmount(index) {
-          if (this.products[index].amount > 1) {
-            this.products[index].amount--;
-            this.products[index].totalCount = this.products[index].amount * this.products[index].price + ' грн'; 
+          if (this.products[index].quantity > 1) {
+            this.products[index].quantity--;
+            this.products[index].totalCount = this.products[index].quantity * toNum(this.products[index].product.price) + ' грн'; 
         }
       }
 
@@ -60,6 +58,7 @@ export async function interactWithProducts() {
           const prices = this.products.map((product) => {
             return toNum(product.totalCount);
           });
+          console.log(this.products);
           const sum = prices.reduce((acc, num) => {
             return acc + num;
           }, 0);
@@ -81,30 +80,33 @@ export async function interactWithProducts() {
       }
 
       class Product {
-        uniqueId;
-        imageSrc;
-        name;
-        subtitle;
-        price;
-        amount;
-        totalCount;
-        weight;
+
         constructor(card) {
-          this.uniqueId = card.getAttribute("data-id-cart");
-          this.imageSrc = card.querySelector(".product-img-container img").src;
-          this.name = card.querySelector(".product-title").innerText;
-          
-          card.querySelector(".product-subtitle") ? 
-              this.subtitle = card.querySelector(".product-subtitle").innerText :
-              this.subtitle = null
+          this.product = {
+              id : card.getAttribute("data-id-cart"),
+              imageSrc: card.querySelector(".product-img-container img").src,
+              name : card.querySelector(".product-title").innerText,
+              price : `${toNum(card.querySelector(".product-price").innerText)}`,
+              sub_name: card.querySelector(".product-subtitle") ? 
+                        card.querySelector(".product-subtitle").innerText : null,
+              description: card.querySelector(".product-description") ? 
+                           card.querySelector(".product-description").innerText : null,
+              weight: card.querySelector(".product-weight") ? 
+                      card.querySelector(".product-weight").innerText : null,
 
-          this.price = toNum(card.querySelector(".product-price").innerText);
-          this.amount = 1;
-          this.totalCount = card.querySelector(".product-price").innerText;
-          card.querySelector(".product-weight") ? 
-              this.weight = card.querySelector(".product-weight").innerText :
-              this.weight = null
+            // card.querySelector(".product-subtitle") ? 
+            //     this.subtitle = card.querySelector(".product-subtitle").innerText :
+            //     this.subtitle = null
 
+            // product-weight
+            
+            // this.totalCount = card.querySelector(".product-price").innerText;
+            // card.querySelector(".product-weight") ? 
+            //     this.weight = card.querySelector(".product-weight").innerText :
+            //     this.weight = null
+          },
+          this.quantity = 1;
+          this.totalCount = toCurrency(this.quantity * this.product.price);
         }
       }
        
@@ -126,7 +128,8 @@ export async function interactWithProducts() {
           const card = e.target.closest(".grid-item");
           const IdCart = Number(card.getAttribute('data-id-cart'));
           const product = new Product(card);
-          console.log(card);
+          
+
           const savedCart = JSON.parse(localStorage.getItem("cart"));
           myCart.products = savedCart.products; 
           
@@ -137,6 +140,7 @@ export async function interactWithProducts() {
             myCart.addProduct(product);
           }
           localStorage.setItem("cart", JSON.stringify(myCart));
+
           if(myCart.count > 0){
             cartNum.textContent = myCart.count;
             cart.classList.add("active");
@@ -153,7 +157,7 @@ export async function interactWithProducts() {
       const popupContainer = document.querySelector("#popup_container");
       const popupProductList = document.querySelector("#popup_product_list");
       const popupCost = document.querySelector("#popup_cost");
-
+      
 
       cart.addEventListener("click", (e) => {
         popupContainer.classList.remove("down_to_popup");
@@ -170,8 +174,10 @@ export async function interactWithProducts() {
         const savedCart = JSON.parse(localStorage.getItem("cart"));
         
         myCart.products = savedCart.products;
-        console.log(myCart.products)
-        const productsHTML = myCart.products.map((product, productIndex) => {
+        // console.log(myCart.products)
+        const productsHTML = myCart.products.map((productObj, productIndex) => {
+          const product = productObj.product;
+
           const productItem = document.createElement("div");
           productItem.classList.add("popup__product");
 
@@ -193,7 +199,7 @@ export async function interactWithProducts() {
           productRowWrap.classList.add("productRowWrap");
           productRowWrap.innerHTML = `
             <div class="popup__product-title">${product.name}</div>
-            <div class="popup__product-subTitle">${product.subtitle ? product.subtitle : ''} <span>${product.weight ? totalWeight(product.amount, product.weight) : ''}</span></div>
+            <div class="popup__product-subTitle">${product.sub_name ? product.sub_name : ''} <span>${product.weight ? totalWeight(productObj.quantity, product.weight) : ''}</span></div>
           `;
           
           const changeAmount = document.createElement("div");
@@ -208,7 +214,7 @@ export async function interactWithProducts() {
               </svg>
           
             </div>
-              <span class="total_count">${product.amount}</span>
+              <span class="total_count">${productObj.quantity}</span>
             <div class="minus">
                 <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: 0 auto;">
                 <path class="background_path" opacity="0.1" d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z" fill="#323232"/>
@@ -221,7 +227,7 @@ export async function interactWithProducts() {
 
           const productPrice = document.createElement("div");
           productPrice.classList.add("popup__product-price");
-          productPrice.innerHTML = product.totalCount;
+          productPrice.innerHTML = productObj.totalCount;
 
           const productDelete = document.createElement("button");
           productDelete.classList.add("popup__product-delete");
@@ -271,7 +277,7 @@ export async function interactWithProducts() {
         });
 
         popupCost.value = toCurrency(myCart.cost);
-        
+        console.log(popupCost);
       }
 
       function closeModal() {

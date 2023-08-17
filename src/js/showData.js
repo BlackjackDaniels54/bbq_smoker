@@ -1,13 +1,12 @@
 import { getProductById, GetProducts } from "./request";
-const isBurger = () => document.querySelector('title').classList.contains('burger');
+
 
 
 export async function fetchProductsWithCategory(index) {
   try {  
     const products = await GetProducts();
 
-    const filterProducts = products.filter((product, i) => product.category_id === index);
-    
+    const filterProducts = products.filter(product => product.category_id === index);
     
     showData(filterProducts)
   } catch (error) {
@@ -20,7 +19,7 @@ export async function showData(products) {
   // Clear the container from previous products
   const container = document.getElementById('product-list');
   container.innerHTML = null;
-  console.log(products);
+  
   // Display each product
   products.forEach(product => {
     
@@ -40,7 +39,7 @@ export async function showData(products) {
                 ${categoryElement}
             </div>
               <div class="product-weight-img-container product-img-container">
-                  <img src="..${product.imageSrc}" alt="">
+                  <img src="${product.imageSrc}" alt="">
                   <div class="lds-roller product-gif-loader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
               </div>
               <div class="add-price-product-container mt-3 mt-lg-2">
@@ -59,7 +58,7 @@ export async function showData(products) {
             <div class="product-title">${product.name}</div>
             ${categoryElement}
             <div class="product-burger-img-container product-img-container">
-                <img src="..${product.imageSrc}" alt=""></img>
+                <img src="${product.imageSrc}" alt=""></img>
                 <div class="lds-roller product-gif-loader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
             </div>
             <div class="add-price-product-container mt-3 mt-lg-2">

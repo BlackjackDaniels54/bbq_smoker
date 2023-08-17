@@ -1,8 +1,28 @@
 $(document).ready(function() {
-    tinymce.init({
-        selector: '#editProductSubName',
-        // ... другие параметры
-    });
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    console.log("all is good");
+                } else {
+                    console.log('Nothing good');
+                }
+
+                form.classList.add('was-validated')
+            }, false)
+            })
+        })()
+
+    
     
 
     $('.list-group-item').click(function() {
@@ -75,6 +95,16 @@ $(document).ready(function() {
     }
 
 
+
+    $('.delivery-option').on('change', function() {
+        if ($(this).val() === 'delivery') {
+            $('#address-field').show(); // Показать поле адреса
+            $('#exampleFormControlTextarea1').prop('required', true); 
+        } else {
+            $('#address-field').hide(); // Скрыть поле адреса
+            $('#exampleFormControlTextarea1').prop('required', false); 
+        }
+    });
     // Получение списка товаров
     /*
     async function fetchProducts() {

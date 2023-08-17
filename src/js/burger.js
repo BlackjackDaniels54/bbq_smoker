@@ -1,91 +1,71 @@
 export function Burger() {
-    function hideBurger(){
-        navbar.classList.remove("collapsed");
-        body.classList.remove('lock');
-        overlayBlock.classList.add('overlay-none');
-    }
-    function showBurger(){
-        navbar.classList.add("collapsed");
-        body.classList.add('lock');
-        overlayBlock.classList.remove('overlay-none');
+    
+    function hideBurger() {
+        $('.navbar').removeClass('collapsed');
+        $('body').removeClass('lock');
+        $('.burger-menu_overlay_active').addClass('overlay-none');
     }
 
-    const navbar = document.querySelector(".navbar");
-    const overlayBlock = document.querySelector('.burger-menu_overlay_active');
-    const body = document.querySelector('body');
-    navbar.querySelector(".toggle").addEventListener("click", (e) => {
-    
-    if(navbar.classList.contains("collapsed")){
-        hideBurger()
-    }else {
-        showBurger()
+    function showBurger() {
+        $('.navbar').addClass('collapsed');
+        $('body').addClass('lock');
+        $('.burger-menu_overlay_active').removeClass('overlay-none');
     }
-   window.addEventListener('click', (e) => {
-    if(e.target.classList.contains('burger-menu_overlay_active')){
-        hideBurger();
-    }
-   })
-    
-    
+
+    $('.navbar .toggle').on('click', function() {
+        if ($('.navbar').hasClass('collapsed')) {
+            hideBurger();
+        } else {
+            showBurger();
+        }
     });
 
-    const anchors = document.querySelectorAll('[data-goto]')
+    $(window).on('click', function(e) {
+        if ($(e.target).hasClass('burger-menu_overlay_active')) {
+            hideBurger();
+        }
+    });
 
-    anchors.forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-        e.preventDefault()
-        const blockID = anchor.getAttribute('data-goto')
-        document.querySelector(blockID).scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        })
+
+
+    $('[data-goto]').on('click', function(e) {
+        e.preventDefault();
+        const blockID = $(this).data('goto');
+        $(blockID).get(0).scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
 
         hideBurger();
-      })
     });
     
-      
-    
-    // Sticky navbar settings
-    if(document.querySelector('body').classList.contains('_pc')){
-            let lastScroll = 0;
-            const defaultOffset = 170,
-                  navBarDynamicHeight = document.querySelector('.navbar').clientHeight,
-                  header = document.querySelector('.navbar');
-                
-                  function getBackgroundHeight(){
-                    if(document.querySelector('.video')){
-                        return document.querySelector('.video').clientHeight;
-                     } else {  
-                        return document.querySelector('#bgnd-wall').clientHeight;
-                      }
-                  }
+
+    if ($('body').hasClass('_pc')) {
+        let lastScroll = 0;
+        const defaultOffset = 170;
+        const navBarDynamicHeight = $('.navbar').innerHeight();
+        const header = $('.navbar');
+        const videoHeight = $('.video').innerHeight();
 
 
+        const scrollPosition = () => window.pageYOffset || document.documentElement.scrollTop;
+        const containHide = () => header.hasClass('hide-header');
 
-            const scrollPosition = () => window.pageYOffset || document.documentElement.scrollTop;
-            const containHide = () => header.classList.contains('hide-header');
-
-                window.addEventListener('scroll', (e) => {
-                    if(scrollPosition() > lastScroll && !containHide() && scrollPosition() > defaultOffset ) {
-                        header.classList.add('hide-header');
-                            header.style.transform = `translateY(-${navBarDynamicHeight}px)`;
-                        
-
-                    } else if(scrollPosition() < lastScroll && containHide()) {
-                        header.classList.remove('hide-header');
-                        header.style.transform = `translateY(0)`;
-                    } else if(window.pageYOffset > getBackgroundHeight()){
-                        header.classList.add('background-black')
-                    } else if(window.pageYOffset < getBackgroundHeight()){
-                        header.classList.remove('background-black');
-                    } 
-
-                    lastScroll = scrollPosition();
-                })
+        $(window).on('scroll', function() {
+            if (scrollPosition() > lastScroll && !containHide() && scrollPosition() > defaultOffset) {
+                header.addClass('hide-header');
+                header.css('transform', `translateY(-${navBarDynamicHeight}px)`);
+            } else if (scrollPosition() < lastScroll && containHide()) {
+                header.removeClass('hide-header');
+                header.css('transform', 'translateY(0)');
+            } else if (scrollPosition() > videoHeight) {
+                header.addClass('background-black');
+            } else if (scrollPosition() < videoHeight) {
+                header.removeClass('background-black');
             }
-    
-    //Categories tabs
 
+            lastScroll = scrollPosition();
+        });
+    }
    
 }

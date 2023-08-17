@@ -1,7 +1,6 @@
 import { Burger } from "./burger";
 import { InitWow } from "./init-wow";
-import { isMobile } from "./request";
-import { isEmptyCart } from "./request";
+import { isMobile, isEmptyCart, formCheckout } from "./request";
 import { SendData } from "./sendData";
 import { UserInfo } from "./userInfo";
 import { interactWithProducts } from "./work-with-products";
@@ -9,7 +8,7 @@ import {fetchProductsWithCategory} from  "./showData";
 
 
 window.addEventListener("DOMContentLoaded", () => {
-    isMobile();
+isMobile();
 
 
   const allLi = document.querySelectorAll('.product-categories-list li');
@@ -36,8 +35,6 @@ addActive(allLi[1]);
           });
 
           addActive(li);
-        
-
 
           fetchProductsWithCategory(index + 1)
             .then(() => {
@@ -54,6 +51,7 @@ addActive(allLi[1]);
         isEmptyCart();
   });
   
+  formCheckout();
   SendData();
 
   UserInfo();
@@ -61,4 +59,3 @@ addActive(allLi[1]);
       InitWow();
 
 })
-

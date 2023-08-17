@@ -13,94 +13,74 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   Burger: () => (/* binding */ Burger)
 /* harmony export */ });
 function Burger() {
-    function hideBurger(){
-        navbar.classList.remove("collapsed");
-        body.classList.remove('lock');
-        overlayBlock.classList.add('overlay-none');
-    }
-    function showBurger(){
-        navbar.classList.add("collapsed");
-        body.classList.add('lock');
-        overlayBlock.classList.remove('overlay-none');
+    
+    function hideBurger() {
+        $('.navbar').removeClass('collapsed');
+        $('body').removeClass('lock');
+        $('.burger-menu_overlay_active').addClass('overlay-none');
     }
 
-    const navbar = document.querySelector(".navbar");
-    const overlayBlock = document.querySelector('.burger-menu_overlay_active');
-    const body = document.querySelector('body');
-    navbar.querySelector(".toggle").addEventListener("click", (e) => {
-    
-    if(navbar.classList.contains("collapsed")){
-        hideBurger()
-    }else {
-        showBurger()
+    function showBurger() {
+        $('.navbar').addClass('collapsed');
+        $('body').addClass('lock');
+        $('.burger-menu_overlay_active').removeClass('overlay-none');
     }
-   window.addEventListener('click', (e) => {
-    if(e.target.classList.contains('burger-menu_overlay_active')){
-        hideBurger();
-    }
-   })
-    
-    
+
+    $('.navbar .toggle').on('click', function() {
+        if ($('.navbar').hasClass('collapsed')) {
+            hideBurger();
+        } else {
+            showBurger();
+        }
     });
 
-    const anchors = document.querySelectorAll('[data-goto]')
+    $(window).on('click', function(e) {
+        if ($(e.target).hasClass('burger-menu_overlay_active')) {
+            hideBurger();
+        }
+    });
 
-    anchors.forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-        e.preventDefault()
-        const blockID = anchor.getAttribute('data-goto')
-        document.querySelector(blockID).scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        })
+
+
+    $('[data-goto]').on('click', function(e) {
+        e.preventDefault();
+        const blockID = $(this).data('goto');
+        $(blockID).get(0).scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
 
         hideBurger();
-      })
     });
     
-      
-    
-    // Sticky navbar settings
-    if(document.querySelector('body').classList.contains('_pc')){
-            let lastScroll = 0;
-            const defaultOffset = 170,
-                  navBarDynamicHeight = document.querySelector('.navbar').clientHeight,
-                  header = document.querySelector('.navbar');
-                
-                  function getBackgroundHeight(){
-                    if(document.querySelector('.video')){
-                        return document.querySelector('.video').clientHeight;
-                     } else {  
-                        return document.querySelector('#bgnd-wall').clientHeight;
-                      }
-                  }
+
+    if ($('body').hasClass('_pc')) {
+        let lastScroll = 0;
+        const defaultOffset = 170;
+        const navBarDynamicHeight = $('.navbar').innerHeight();
+        const header = $('.navbar');
+        const videoHeight = $('.video').innerHeight();
 
 
+        const scrollPosition = () => window.pageYOffset || document.documentElement.scrollTop;
+        const containHide = () => header.hasClass('hide-header');
 
-            const scrollPosition = () => window.pageYOffset || document.documentElement.scrollTop;
-            const containHide = () => header.classList.contains('hide-header');
-
-                window.addEventListener('scroll', (e) => {
-                    if(scrollPosition() > lastScroll && !containHide() && scrollPosition() > defaultOffset ) {
-                        header.classList.add('hide-header');
-                            header.style.transform = `translateY(-${navBarDynamicHeight}px)`;
-                        
-
-                    } else if(scrollPosition() < lastScroll && containHide()) {
-                        header.classList.remove('hide-header');
-                        header.style.transform = `translateY(0)`;
-                    } else if(window.pageYOffset > getBackgroundHeight()){
-                        header.classList.add('background-black')
-                    } else if(window.pageYOffset < getBackgroundHeight()){
-                        header.classList.remove('background-black');
-                    } 
-
-                    lastScroll = scrollPosition();
-                })
+        $(window).on('scroll', function() {
+            if (scrollPosition() > lastScroll && !containHide() && scrollPosition() > defaultOffset) {
+                header.addClass('hide-header');
+                header.css('transform', `translateY(-${navBarDynamicHeight}px)`);
+            } else if (scrollPosition() < lastScroll && containHide()) {
+                header.removeClass('hide-header');
+                header.css('transform', 'translateY(0)');
+            } else if (scrollPosition() > videoHeight) {
+                header.addClass('background-black');
+            } else if (scrollPosition() < videoHeight) {
+                header.removeClass('background-black');
             }
-    
-    //Categories tabs
 
+            lastScroll = scrollPosition();
+        });
+    }
    
 }
 
@@ -140,6 +120,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   GetProducts: () => (/* binding */ GetProducts),
 /* harmony export */   Success: () => (/* binding */ Success),
 /* harmony export */   clearLocalStorage: () => (/* binding */ clearLocalStorage),
+/* harmony export */   formCheckout: () => (/* binding */ formCheckout),
 /* harmony export */   getProductById: () => (/* binding */ getProductById),
 /* harmony export */   isEmptyCart: () => (/* binding */ isEmptyCart),
 /* harmony export */   isMobile: () => (/* binding */ isMobile)
@@ -203,8 +184,6 @@ function Success() {
 
           AlertSuccess.classList.remove('hide-smooth-animation');
 
-         
-
           setTimeout(function() {
             mainContainer.scrollTo({
                 top: mainContainer.scrollHeight,
@@ -224,10 +203,10 @@ function Success() {
 
 function Danger() {
     
-    const AlertSuccess = document.querySelector('.alert-danger__container'),
+    const AlertDanger = document.querySelector('.alert-danger__container'),
           mainContainer = document.querySelector('.popup__container');
 
-          AlertSuccess.classList.remove('hide-smooth-animation');
+          AlertDanger.classList.remove('hide-smooth-animation');
 
           setTimeout(function() {
             mainContainer.scrollTo({
@@ -237,7 +216,7 @@ function Danger() {
             }, 500);
 
           setTimeout(function() {
-            AlertSuccess.classList.add('hide-smooth-animation');
+            AlertDanger.classList.add('hide-smooth-animation');
           }, 3500);
 
 }
@@ -259,7 +238,18 @@ function clearLocalStorage() {
     
 }
 
-
+function formCheckout() {
+  
+  $('.delivery-option').on('change', function() {
+    if ($(this).val() === 'delivery') {
+        $('#address-field').show(); // Показать поле адреса
+        $('#exampleFormControlTextarea1').prop('required', true); 
+    } else {
+        $('#address-field').hide(); // Скрыть поле адреса
+        $('#exampleFormControlTextarea1').prop('required', false); 
+    }
+});
+}
 
 /***/ }),
 
@@ -280,12 +270,13 @@ __webpack_require__.r(__webpack_exports__);
 
 function SendData(){
     
-    const TOKEN = '6304428329:AAEgyRD2JY9eA1aw0LfHev91x06wTvCfuGw';
-    const CHAT_ID = '-1001641848532';
-    const URI_API = `https://api.telegram.org/bot${TOKEN}/sendMessage`;
+
+    var URI_API = 'https://artichecker.com/BBQ-Smoker/api/sendRequest';
 
     const spinner = document.querySelector('.spinner');
-    const btnSbm = document.querySelector('#form');
+    const form = document.querySelector('#form');
+
+
 
     function showSpinner(){
         spinner.classList.add('spinner-active');
@@ -293,45 +284,46 @@ function SendData(){
     function hideSpinner(){
         spinner.classList.remove('spinner-active');
     }
-    btnSbm.addEventListener("submit", (e) => {
+
+
+    form.addEventListener("submit", (e) => {
         e.preventDefault();
         const savedCart = JSON.parse(localStorage.getItem("cart"));
         const UserInfo = JSON.parse(localStorage.getItem("user"));
         
+        console.log(savedCart.products)
         if(savedCart.products == 0){
             alert("Ваша корзина пуста");
-        }else {
-            let aboutUser = `<b>Нове замовлення!</b>\n<b>Ім'я:</b> <pre>${UserInfo.name}</pre>\n<b>Телефон:</b> <pre>${UserInfo.phone}</pre>\n\n`;
-        
-            let orderInfo = savedCart.products.reduce((total, target) => {
-            return total += `<b>${target.name} ${target.subtitle}: ${target.amount} шт.</b>\n`
-        },``);
-        
-                let message = aboutUser + orderInfo;
-                if(UserInfo.textaddress){
-                    message += `\n<b>Адреса:</b> <pre>${UserInfo.textaddress}</pre>\n`;
-                }
-                if(UserInfo.comment){
-                    message += `<b>Побажання:</b> <pre>${UserInfo.comment}</pre>\n`;
-                }
-                showSpinner();
-                axios__WEBPACK_IMPORTED_MODULE_1__["default"].post(URI_API, {
-                    chat_id: CHAT_ID,
-                    parse_mode: 'html',
-                    text: message
-                }).then(function (response) {
-                    hideSpinner();
-                    (0,_request__WEBPACK_IMPORTED_MODULE_0__.Success)();
-                    (0,_request__WEBPACK_IMPORTED_MODULE_0__.clearLocalStorage)();
-                    btnSbm.reset();
-                }).catch(function(error){
-                    hideSpinner();
-                    (0,_request__WEBPACK_IMPORTED_MODULE_0__.Danger)();
-                })  
         }
-        
+        else {
+            if (!form.checkValidity()) {
+                e.stopPropagation()
+                console.log('Nothing good');
+            } else {
+                let CheckOutData = {
+                    cart: savedCart.products,
+                    order: {...UserInfo, deliveryOption: $('input[name="delivery-option"]:checked').val()}
+                }
+                console.log(CheckOutData);
+                showSpinner();
+                axios__WEBPACK_IMPORTED_MODULE_1__["default"].post(URI_API, CheckOutData)
+                    .then(function (response) {
+                        hideSpinner();
+                        (0,_request__WEBPACK_IMPORTED_MODULE_0__.Success)();
+                        (0,_request__WEBPACK_IMPORTED_MODULE_0__.clearLocalStorage)();
+                        $('#form').removeClass('was-validated')
+                        form.reset();
+                    }).catch(function(error){
+                        hideSpinner();
+                        (0,_request__WEBPACK_IMPORTED_MODULE_0__.Danger)();
+                    }) 
+            }
 
+            $('#form').addClass('was-validated')
+        }
+            
     })
+
 }
 
 /***/ }),
@@ -349,15 +341,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _request__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./request */ "./src/js/request.js");
 
-const isBurger = () => document.querySelector('title').classList.contains('burger');
+
 
 
 async function fetchProductsWithCategory(index) {
   try {  
     const products = await (0,_request__WEBPACK_IMPORTED_MODULE_0__.GetProducts)();
 
-    const filterProducts = products.filter((product, i) => product.category_id === index);
-    
+    const filterProducts = products.filter(product => product.category_id === index);
     
     showData(filterProducts)
   } catch (error) {
@@ -370,7 +361,7 @@ async function showData(products) {
   // Clear the container from previous products
   const container = document.getElementById('product-list');
   container.innerHTML = null;
-  console.log(products);
+  
   // Display each product
   products.forEach(product => {
     
@@ -390,7 +381,7 @@ async function showData(products) {
                 ${categoryElement}
             </div>
               <div class="product-weight-img-container product-img-container">
-                  <img src="..${product.imageSrc}" alt="">
+                  <img src="${product.imageSrc}" alt="">
                   <div class="lds-roller product-gif-loader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
               </div>
               <div class="add-price-product-container mt-3 mt-lg-2">
@@ -409,7 +400,7 @@ async function showData(products) {
             <div class="product-title">${product.name}</div>
             ${categoryElement}
             <div class="product-burger-img-container product-img-container">
-                <img src="..${product.imageSrc}" alt=""></img>
+                <img src="${product.imageSrc}" alt=""></img>
                 <div class="lds-roller product-gif-loader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
             </div>
             <div class="add-price-product-container mt-3 mt-lg-2">
@@ -463,29 +454,34 @@ __webpack_require__.r(__webpack_exports__);
 function UserInfo() {
     let name = document.querySelector('input[name="name"]');
     let phone = document.querySelector('input[name="phone"]');
-    let text__area = document.querySelector("#exampleFormControlTextarea1");
+    let address = document.querySelector("#exampleFormControlTextarea1");
     let comment = document.querySelector("#exampleFormControlTextarea2");
    
-    let User = {};
+    let User = {
+        name: '',
+        phone: '', 
+        address: '',
+        comment: ''
+    };
     if (localStorage.getItem("user") == null) {
         localStorage.setItem("user", JSON.stringify(User));
     }
 
-    name.addEventListener('change', (e) => {
+    name.addEventListener('input', (e) => {
         const savedUser = JSON.parse(localStorage.getItem("user"));
         savedUser.name = e.target.value.trim().substr(0, 50);
         localStorage.setItem("user", JSON.stringify(savedUser));
     });
     
-    phone.addEventListener('change', (e) => {
+    phone.addEventListener('input', (e) => {
         const savedUser = JSON.parse(localStorage.getItem("user"));
-        savedUser.phone = e.target.value;
+        savedUser.phone = e.target.value.substr(0,13)
         localStorage.setItem("user", JSON.stringify(savedUser));
     })
    
-    text__area.addEventListener('input', (e) => {
+    address.addEventListener('input', (e) => {
             const savedUser = JSON.parse(localStorage.getItem("user"));
-            savedUser.textaddress = e.target.value.trim().substr(0, 150);
+            savedUser.address = e.target.value.trim().substr(0, 150);
             localStorage.setItem("user", JSON.stringify(savedUser));
     })
 
@@ -512,9 +508,10 @@ __webpack_require__.r(__webpack_exports__);
 async function interactWithProducts() {
   
       const toNum = (str) => parseFloat(str);
+
       const totalWeight = (amount, weight) => {
         const totalWeight = amount * toNum(weight);
-        if(totalWeight > 1000){
+        if(totalWeight >= 1000){
           return `${totalWeight / 1000} кг.`
         }else {
           return `${totalWeight} г.`
@@ -553,16 +550,14 @@ async function interactWithProducts() {
           this.products.splice(index, 1);
         }
         PlusAmount(index) {
-          
-            this.products[index].amount++;
-            this.products[index].totalCount = this.products[index].amount * this.products[index].price + ' грн'; 
-          
-          
+            console.log(this.products[index])
+            this.products[index].quantity++;
+            this.products[index].totalCount = toCurrency(this.products[index].quantity * toNum(this.products[index].product.price)); 
         }
         MinusAmount(index) {
-          if (this.products[index].amount > 1) {
-            this.products[index].amount--;
-            this.products[index].totalCount = this.products[index].amount * this.products[index].price + ' грн'; 
+          if (this.products[index].quantity > 1) {
+            this.products[index].quantity--;
+            this.products[index].totalCount = this.products[index].quantity * toNum(this.products[index].product.price) + ' грн'; 
         }
       }
 
@@ -570,6 +565,7 @@ async function interactWithProducts() {
           const prices = this.products.map((product) => {
             return toNum(product.totalCount);
           });
+          console.log(this.products);
           const sum = prices.reduce((acc, num) => {
             return acc + num;
           }, 0);
@@ -591,30 +587,33 @@ async function interactWithProducts() {
       }
 
       class Product {
-        uniqueId;
-        imageSrc;
-        name;
-        subtitle;
-        price;
-        amount;
-        totalCount;
-        weight;
+
         constructor(card) {
-          this.uniqueId = card.getAttribute("data-id-cart");
-          this.imageSrc = card.querySelector(".product-img-container img").src;
-          this.name = card.querySelector(".product-title").innerText;
-          
-          card.querySelector(".product-subtitle") ? 
-              this.subtitle = card.querySelector(".product-subtitle").innerText :
-              this.subtitle = null
+          this.product = {
+              id : card.getAttribute("data-id-cart"),
+              imageSrc: card.querySelector(".product-img-container img").src,
+              name : card.querySelector(".product-title").innerText,
+              price : `${toNum(card.querySelector(".product-price").innerText)}`,
+              sub_name: card.querySelector(".product-subtitle") ? 
+                        card.querySelector(".product-subtitle").innerText : null,
+              description: card.querySelector(".product-description") ? 
+                           card.querySelector(".product-description").innerText : null,
+              weight: card.querySelector(".product-weight") ? 
+                      card.querySelector(".product-weight").innerText : null,
 
-          this.price = toNum(card.querySelector(".product-price").innerText);
-          this.amount = 1;
-          this.totalCount = card.querySelector(".product-price").innerText;
-          card.querySelector(".product-weight") ? 
-              this.weight = card.querySelector(".product-weight").innerText :
-              this.weight = null
+            // card.querySelector(".product-subtitle") ? 
+            //     this.subtitle = card.querySelector(".product-subtitle").innerText :
+            //     this.subtitle = null
 
+            // product-weight
+            
+            // this.totalCount = card.querySelector(".product-price").innerText;
+            // card.querySelector(".product-weight") ? 
+            //     this.weight = card.querySelector(".product-weight").innerText :
+            //     this.weight = null
+          },
+          this.quantity = 1;
+          this.totalCount = toCurrency(this.quantity * this.product.price);
         }
       }
        
@@ -636,7 +635,8 @@ async function interactWithProducts() {
           const card = e.target.closest(".grid-item");
           const IdCart = Number(card.getAttribute('data-id-cart'));
           const product = new Product(card);
-          console.log(card);
+          
+
           const savedCart = JSON.parse(localStorage.getItem("cart"));
           myCart.products = savedCart.products; 
           
@@ -647,6 +647,7 @@ async function interactWithProducts() {
             myCart.addProduct(product);
           }
           localStorage.setItem("cart", JSON.stringify(myCart));
+
           if(myCart.count > 0){
             cartNum.textContent = myCart.count;
             cart.classList.add("active");
@@ -663,7 +664,7 @@ async function interactWithProducts() {
       const popupContainer = document.querySelector("#popup_container");
       const popupProductList = document.querySelector("#popup_product_list");
       const popupCost = document.querySelector("#popup_cost");
-
+      
 
       cart.addEventListener("click", (e) => {
         popupContainer.classList.remove("down_to_popup");
@@ -680,8 +681,10 @@ async function interactWithProducts() {
         const savedCart = JSON.parse(localStorage.getItem("cart"));
         
         myCart.products = savedCart.products;
-        console.log(myCart.products)
-        const productsHTML = myCart.products.map((product, productIndex) => {
+        // console.log(myCart.products)
+        const productsHTML = myCart.products.map((productObj, productIndex) => {
+          const product = productObj.product;
+
           const productItem = document.createElement("div");
           productItem.classList.add("popup__product");
 
@@ -703,7 +706,7 @@ async function interactWithProducts() {
           productRowWrap.classList.add("productRowWrap");
           productRowWrap.innerHTML = `
             <div class="popup__product-title">${product.name}</div>
-            <div class="popup__product-subTitle">${product.subtitle ? product.subtitle : ''} <span>${product.weight ? totalWeight(product.amount, product.weight) : ''}</span></div>
+            <div class="popup__product-subTitle">${product.sub_name ? product.sub_name : ''} <span>${product.weight ? totalWeight(productObj.quantity, product.weight) : ''}</span></div>
           `;
           
           const changeAmount = document.createElement("div");
@@ -718,7 +721,7 @@ async function interactWithProducts() {
               </svg>
           
             </div>
-              <span class="total_count">${product.amount}</span>
+              <span class="total_count">${productObj.quantity}</span>
             <div class="minus">
                 <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: 0 auto;">
                 <path class="background_path" opacity="0.1" d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z" fill="#323232"/>
@@ -731,7 +734,7 @@ async function interactWithProducts() {
 
           const productPrice = document.createElement("div");
           productPrice.classList.add("popup__product-price");
-          productPrice.innerHTML = product.totalCount;
+          productPrice.innerHTML = productObj.totalCount;
 
           const productDelete = document.createElement("button");
           productDelete.classList.add("popup__product-delete");
@@ -781,7 +784,7 @@ async function interactWithProducts() {
         });
 
         popupCost.value = toCurrency(myCart.cost);
-        
+        console.log(popupCost);
       }
 
       function closeModal() {
@@ -4934,9 +4937,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
 window.addEventListener("DOMContentLoaded", () => {
-    (0,_request__WEBPACK_IMPORTED_MODULE_2__.isMobile)();
+(0,_request__WEBPACK_IMPORTED_MODULE_2__.isMobile)();
 
 
   const allLi = document.querySelectorAll('.product-categories-list li');
@@ -4963,8 +4965,6 @@ addActive(allLi[1]);
           });
 
           addActive(li);
-        
-
 
           (0,_showData__WEBPACK_IMPORTED_MODULE_6__.fetchProductsWithCategory)(index + 1)
             .then(() => {
@@ -4981,6 +4981,7 @@ addActive(allLi[1]);
         (0,_request__WEBPACK_IMPORTED_MODULE_2__.isEmptyCart)();
   });
   
+  (0,_request__WEBPACK_IMPORTED_MODULE_2__.formCheckout)();
   (0,_sendData__WEBPACK_IMPORTED_MODULE_3__.SendData)();
 
   (0,_userInfo__WEBPACK_IMPORTED_MODULE_4__.UserInfo)();
@@ -4988,8 +4989,6 @@ addActive(allLi[1]);
       (0,_init_wow__WEBPACK_IMPORTED_MODULE_1__.InitWow)();
 
 })
-
-
 })();
 
 /******/ })()

@@ -57,8 +57,6 @@ export function Success() {
 
           AlertSuccess.classList.remove('hide-smooth-animation');
 
-         
-
           setTimeout(function() {
             mainContainer.scrollTo({
                 top: mainContainer.scrollHeight,
@@ -78,10 +76,10 @@ export function Success() {
 
 export function Danger() {
     
-    const AlertSuccess = document.querySelector('.alert-danger__container'),
+    const AlertDanger = document.querySelector('.alert-danger__container'),
           mainContainer = document.querySelector('.popup__container');
 
-          AlertSuccess.classList.remove('hide-smooth-animation');
+          AlertDanger.classList.remove('hide-smooth-animation');
 
           setTimeout(function() {
             mainContainer.scrollTo({
@@ -91,7 +89,7 @@ export function Danger() {
             }, 500);
 
           setTimeout(function() {
-            AlertSuccess.classList.add('hide-smooth-animation');
+            AlertDanger.classList.add('hide-smooth-animation');
           }, 3500);
 
 }
@@ -113,3 +111,15 @@ export function clearLocalStorage() {
     
 }
 
+export function formCheckout() {
+  
+  $('.delivery-option').on('change', function() {
+    if ($(this).val() === 'delivery') {
+        $('#address-field').show(); // Показать поле адреса
+        $('#exampleFormControlTextarea1').prop('required', true); 
+    } else {
+        $('#address-field').hide(); // Скрыть поле адреса
+        $('#exampleFormControlTextarea1').prop('required', false); 
+    }
+});
+}
