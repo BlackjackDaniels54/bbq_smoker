@@ -88,7 +88,7 @@ $app->group('/BBQ-Smoker/api', function (Slim\Routing\RouteCollectorProxy $group
             $productCost = $product['price'] * (int) $productData['quantity'];
             $totalCost += $productCost;
     
-            $message .= "🔹<b>{$product['name']}</b>:\n";
+            $message .= "🔹<b>{$product['name']}</b>{$product['sub_name']}:\n";
             $message .= "🔸🔸<b>Вартість:</b> ₴{$product['price']}\n";
             $message .= "🔸🔸<b>Кількість:</b> {$productData['quantity']}\n";
             $message .= "🔸🔸<b>Загальна вартість:</b> ₴{$productCost}\n"; 
