@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <!-- Подключение Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    <div class="container-fluid mt-5">
+        <div class="row">
+            <!-- Левая часть (колонка ширины 3) -->
+            <div class="col-2 bg-light">
+                <div class="text-center my-4">
+                    <img src="path/to/admin_photo.jpg" alt="Admin Photo" class="img-fluid rounded-circle" style="max-width: 150px;">
+                    <h4>Имя админа</h4>
+                </div>
+                <div class="nav list-group flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link list-group-item list-group-item-action active" data-bs-toggle="tab" href="#add-product">Добавить товар</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link list-group-item list-group-item-action" data-bs-toggle="tab" href="#product-list">Список товаров</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link list-group-item list-group-item-action" data-bs-toggle="tab" href="#order-list">Список заказов</a>
+                    </li>
+                </div>
+            </div>
+
+            <!-- Правая часть (колонка ширины 9) -->
+            <div class="col-10">
+                <div class="tab-content">
+                    <!-- Вкладка "Добавить товар" -->
+                    <div class="tab-pane fade show active" id="add-product">
+                        <form>
+                            <div class="mb-3">
+                                <label for="product-name" class="form-label">Название товара</label>
+                                <input type="text" class="form-control" id="product-name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="product-price" class="form-label">Цена товара</label>
+                                <input type="text" class="form-control" id="product-price">
+                            </div>
+                            <div class="mb-3">
+                                <label for="product-category" class="form-label">Категория товара</label>
+                                <input type="text" class="form-control" id="product-category">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Добавить</button>
+                        </form>
+                    </div>
+
+                    <!-- Вкладка "Список товаров" -->
+                    <div class="container tab-pane fade" id="product-list">
+                        <div class="row">
+                            <div class="col-2 mt-5">
+                                <div class="list-group flex-column">
+                                        <a class=" list-group-item list-group-item-action active" data-bs-toggle="tab" href="#show_burgers">Все</a>
+
+                                        <a class=" list-group-item list-group-item-action" data-bs-toggle="tab" href="#show_burgers">Бургеры</a>
+                                    
+                                    
+                                        <a class=" list-group-item list-group-item-action" data-bs-toggle="tab" href="#show_meat">Мясо</a>
+                                    
+                                    
+                                        <a class=" list-group-item list-group-item-action" data-bs-toggle="tab" href="#show_sauces">Соусы</a>
+
+                                        <a class=" list-group-item list-group-item-action" data-bs-toggle="tab" href="#show_drinks">Напитки</a>
+                                </div>
+                            </div>
+                            <div class="col-10">
+                                
+                                    <table class="table" id="productTable">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Картинка</th>
+                                                <th scope="col">Название</th>
+                                                <th scope="col">Подзаголовок</th>
+                                                <th scope="col">Цена</th>
+                                                <th scope="col">Описание</th>
+                                                <th scope="col">Вес</th>
+                                                <th scope="col">Действия</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="product-list-container">
+                                            <!-- Здесь будет список товаров -->
+                                        </tbody>
+                                    </table>
+                                
+                            </div>
+                        </div>
+                    </div>
+                            
+                    <div class="tab-pane fade" id="orders-list">
+                        <!-- Здесь будет генерироваться список товаров по запросу на API -->
+                        <!-- Каждый товар будет иметь кнопки "Изменить", "Удалить", "Деактивировать" -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Подключение Bootstrap JS (необходим для некоторых функциональностей) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="../../dist/js/bundleAdmin.js"></script>
+</body>
+</html>
+
+
