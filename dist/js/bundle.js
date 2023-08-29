@@ -367,7 +367,8 @@ async function fetchProductsWithCategory(index) {
 
     const filterProducts = products.filter(product => product.category_id === index);
     
-    showData(filterProducts)
+    showData(filterProducts);
+
   } catch (error) {
     console.error('Error while fetching products with category:', error);
   }

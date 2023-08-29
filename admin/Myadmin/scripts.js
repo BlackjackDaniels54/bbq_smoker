@@ -1,12 +1,13 @@
-import { GetProducts } from "./modules/requests";
-import { ShowData } from "./modules/ShowData";
+import { GetAllData} from "./modules/requests";
+import {clickTabs } from "./modules/Tabs";
 
 window.addEventListener("DOMContentLoaded", (e) => {
 
-    GetProducts()
-        .then(data =>{
-            ShowData(data);
-            console.log(data);
+   GetAllData()
+        .then(data => {
+            
+            clickTabs();
+            
         })
 
 })
