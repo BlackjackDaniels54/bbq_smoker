@@ -51,7 +51,7 @@ $(document).ready(function() {
         $('#addProductContent').hide();
         $('#productListContent').show();
         fetchProducts();
-        fetchCategories();
+       
     });
 
     /*
@@ -151,6 +151,7 @@ $(document).ready(function() {
     $(document).on('click', '.editBtn', function(){
         let row = $(this).closest('tr');  // ближайшая строка таблицы
         let id = $(this).data('id');
+        console.log(row);
         let productName = row.children().eq(1).text();
         let productDescription = row.children().eq(2).text();
         let productImageSrc = row.children().eq(3).find('img').attr('src');
