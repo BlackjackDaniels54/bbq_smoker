@@ -73,7 +73,19 @@ export function EditDelHideButtons(){
     Edits.forEach(edit => 
         edit.addEventListener('click' , (e) => {
             const element = e.target.closest('tr');
-      
+            const savedInfoOfProduct = {
+                name: element.querySelector('.product-name').innerText,
+                subname: element.querySelector('.product-subname').innerText,
+                description: element.querySelector('.product-subname').innerText,
+                imgSrc: element.querySelector('.product-img img').src,
+                price: element.querySelector('.product-price').innerText,
+                weight: element.querySelector('.product-weight').innerText,
+                category: element.querySelector('.product-category').innerText
+
+            }
+
+            localStorage.setItem("savedProduct", JSON.stringify(savedInfoOfProduct));
+
             const body = document.querySelector('.modal-body form'),
                   modalName = body.querySelector('#editProductName'),
                   modalSubname = body.querySelector('#editProductSubName'),
@@ -83,13 +95,16 @@ export function EditDelHideButtons(){
                   modalWeight = body.querySelector('#editProductWeight'),
                   modalCategory = body.querySelector('#editProductCategory');
 
-                  modalName.value = element.querySelector('.product-name').innerText;
-                  modalSubname.value = element.querySelector('.product-subname').innerText;
-                  modalDescription.value = element.querySelector('.product-price').innerText;
-                  modalImg.src = element.querySelector('.product-img img').src;
-                  modalPrice.value = element.querySelector('.product-price').innerText;
-                  modalWeight.value = element.querySelector('.product-weight').innerText;
-                  modalCategory.value = element.querySelector('.product-category').innerText;
+            
+            const { name, subname, description, imgSrc, price, weight, category } = savedInfoOfProduct;
+
+                  modalName.value = name;
+                  modalSubname.value = subname;
+                  modalDescription.value = description;
+                  modalImg.src = imgSrc;
+                  modalPrice.value = price;
+                  modalWeight.value = weight;
+                  modalCategory.value = category;
 
 
     }));
