@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <!-- Подключение Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    <div class="container-fluid mt-5">
+        <div class="row">
+            <!-- Левая часть (колонка ширины 3) -->
+            <div class="col-2 bg-light">
+                <div class="text-center my-5">
+                    <img src="src/Tony-Stark.jpg" alt="Admin Photo" class="img-fluid rounded mx-auto" style="max-width: 150px;">
+                    
+                    
+                    <div class="input-group">
+                        <input type="file" class="form-control" id="inputGroupFile01">
+                    </div>
+                    
+                      
+                    <h4 class="bg-teal-400">Евгений</h4>
+                </div>
+                <div class="nav list-group flex-column ">
+                    <li class="nav-item">
+                        <a class="nav-link list-group-item list-group-item-action active" data-bs-toggle="tab" href="#add-product">Добавить товар</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link list-group-item list-group-item-action" data-bs-toggle="tab" href="#product-list">Список товаров</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link list-group-item list-group-item-action" data-bs-toggle="tab" href="#orders-list">Список заказов</a>
+                    </li>
+                </div>
+            </div>
+
+            <!-- Правая часть (колонка ширины 9) -->
+            <div class="col-10">
+                <div class="tab-content">
+                    <!-- Вкладка "Добавить товар" -->
+                    <div class="tab-pane fade show active" id="add-product">
+                        <form>
+                            <div class="mb-3">
+                                <label for="product-name" class="form-label">Название товара</label>
+                                <input type="text" class="form-control" id="product-name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="product-price" class="form-label">Цена товара</label>
+                                <input type="text" class="form-control" id="product-price">
+                            </div>
+                            <div class="mb-3">
+                                <label for="product-category" class="form-label">Категория товара</label>
+                                <input type="text" class="form-control" id="product-category">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Добавить</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Вкладка "Список товаров" -->
+                    <div class="container-fluid tab-pane fade" id="product-list">
+                        <div class="row">
+                            <div class="col-1 mt-5">
+                                <div id="category-container" class="list-group flex-column">
+                                       
+                                </div>
+                            </div>
+                            <div class="col-10">
+                                
+                                    <table class="table" id="productTable">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Картинка</th>
+                                                <th scope="col">Название</th>
+                                                <th scope="col">Подзаголовок</th>
+                                                <th scope="col">Цена</th>
+                                                <th scope="col">Описание</th>
+                                                <th scope="col">Вес</th>
+                                                <th scope="col">Действия</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="product-list-container">
+                                            <!-- Здесь будет список товаров -->
+                                        </tbody>
+                                    </table>
+                                
+                            </div>
+                        </div>
+                    </div>
+                         
+                    <!-- Вкладка "Список заказов" -->
+                    <div class="container tab-pane fade show" id="orders-list">
+                        <div class="row">
+                             <div class="col-12">
+                                    В разработке !
+                             </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+           
+        </div>
+        
+    </div>
+    
+
+
+<div class="modal fade" id="editProductModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Изменить товар</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="changeInfoForm">
+                    <div class="mb-3">
+                        <label for="editProductName" class="form-label">Название товара</label>
+                        <input type="text" class="form-control" id="editProductName" placeholder="Введите название товара">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editProductSubName" class="form-label">Подзаголовок товара:</label>
+                        <input type="text" class="form-control" id="editProductSubName" placeholder="Введите подзаголовок товара">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editProductDescription" class="form-label">Описание товара</label>
+                        <input type="text" class="form-control" id="editProductDescription" placeholder="Введите описание товара">
+                    </div>
+                    
+                    <div class="mb-3 d-flex ">
+                        <div class="">
+                            <label for="formFile" class="form-label">Выберите фотографию</label>
+                            <input class="form-control" type="file" id="formFile" accept=".jpg, .jpeg, .png">
+                        </div>
+                        
+                        <div class="previewImage-container ms-5">
+                            <img style="width: 100px;" src="#" alt="#" id="previewImage">
+                        </div>
+                        
+                    </div>
+                    <div class="mb-3">
+                        <label for="editProductPrice" class="form-label">Цена товара</label>
+                        <input type="text" class="form-control" id="editProductPrice" placeholder="Введите цену товара">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editProductWeight" class="form-label">Вес товара</label>
+                        <input type="text" class="form-control" id="editProductWeight" placeholder="Введите вес товара">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editProductCategory" class="form-label">Категория товара</label>
+                        <select class="form-control" id="editProductCategory">
+                            <!-- Сюда будут добавлены опции -->
+                        </select>
+                    </div>
+                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-primary" id="saveChangesBtn">Сохранить изменения</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно для подтверждения удаления товара -->
+<div class="modal fade" id="deleteProductModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Подтвердить удаление</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Вы уверены, что хотите удалить этот товар?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Удалить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Подключение Bootstrap JS (необходим для некоторых функциональностей) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="../../dist/js/bundleAdmin.js"></script>
+</body>
+</html>
+
+
