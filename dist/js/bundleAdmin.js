@@ -90,13 +90,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
 function clickTabs() {
     const tabs = document.querySelectorAll('#category-container a');
             tabs.forEach(item => {
                 item.addEventListener('click', (e) => {
                     const idOfCategory = Number(e.target.getAttribute('data-id'));
-                    console.log(idOfCategory)
+                    
                     FilterProducts(idOfCategory);
                 })
             })
@@ -106,9 +105,9 @@ function clickTabs() {
                     const productsProm = await (0,_requests__WEBPACK_IMPORTED_MODULE_1__.GetProducts)();
                     // const categories = JSON.parse(localStorage.getItem("categories"));
         
-                const filteredProducts = productsProm.filter(product => product.category_id === id);
+                    const filteredProducts = productsProm.filter(product => product.category_id === id);
         
-                (0,_ShowData__WEBPACK_IMPORTED_MODULE_0__.ShowData)(filteredProducts);
+                    (0,_ShowData__WEBPACK_IMPORTED_MODULE_0__.ShowData)(filteredProducts);
                 }
                 catch(e){
                     console.log('ебанная ошибка', e);
@@ -122,33 +121,36 @@ function EditDelHideButtons(){
     const Edits = document.querySelectorAll('.editBtn'),
           Hide = document.querySelectorAll('.HideBtn'),
           formFile = document.getElementById('formFile'),
-          previewImage = document.getElementById('previewImage');
+          previewImage = document.getElementById('previewImage'),
+          ChangeForm = document.getElementById('saveChangesBtn'),
+          selectContainer = document.getElementById('editProductCategory'),     
+          Categories = JSON.parse(localStorage.getItem('categories'));
+          selectContainer.innerHTML = null;
+    
           
-          console.log(formFile.value);
-          
-          formFile.addEventListener('change', function(event) {
-            const selectedFile = event.target.files[0];
-            if (selectedFile) {
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    console.log(e.target.result);
-                    previewImage.src = e.target.result;
-                    previewImage.style.display = 'block';
-                }
-                
-                reader.readAsDataURL(selectedFile);
-                
-            } else {
-                previewImage.src = '#';
-                previewImage.style.display = 'none';
+    function FileChange (event) {
+        const selectedFile = event.target.files[0];
+        console.log(selectedFile);
+        if (selectedFile) {
+            const reader = new FileReader();
+            reader.onload = function(e) {  
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
             }
-        });
+            reader.readAsDataURL(selectedFile);
 
-    const selectContainer = document.getElementById('editProductCategory');
-    selectContainer.innerHTML = null;
+        } else {
+            previewImage.src = '#';
+            previewImage.style.display = 'none';
+            }
+        }
 
-    const Categories = JSON.parse(localStorage.getItem('categories'));
+    formFile.addEventListener('change', (e) => {FileChange(e)});
+
+    
+    
+
+   //Отображение категорий в теге <select/>
 
     Categories.forEach(category => {
         const item = document.createElement('option');
@@ -157,22 +159,39 @@ function EditDelHideButtons(){
         selectContainer.appendChild(item);   
     });
 
+    function getDataFromInputs(element){
+        if(element.tagName === 'FORM'){
+            return  {
+                name: element.querySelector('#editProductName').value,
+                subname: element.querySelector('#editProductSubName').value,
+                description: element.querySelector('#editProductDescription').value,
+                imgSrc: element.querySelector('#previewImage').src,
+                
+                price: element.querySelector('#editProductPrice').value,
+                weight: element.querySelector('#editProductWeight').value,
+                category: element.querySelector('#editProductCategory').value
+            }
+        }
+        return {
+                name: element.querySelector('.product-name').innerText,
+                subname: element.querySelector('.product-subname').innerText,
+                description: element.querySelector('.product-description').innerText,
+                imgSrc: element.querySelector('.product-img img').src,
+                
+                price: element.querySelector('.product-price').innerText,
+                weight: element.querySelector('.product-weight').innerText,
+                category: element.querySelector('.product-category').innerText
+        }
+    }
+
+    //Обработка событий "click" по кнопке "Изменить товар"
 
     Edits.forEach(edit => 
         edit.addEventListener('click' , (e) => {
             const element = e.target.closest('tr');
-            const savedInfoOfProduct = {
-                name: element.querySelector('.product-name').innerText,
-                subname: element.querySelector('.product-subname').innerText,
-                description: element.querySelector('.product-subname').innerText,
-                imgSrc: element.querySelector('.product-img img').src,
-                price: element.querySelector('.product-price').innerText,
-                weight: element.querySelector('.product-weight').innerText,
-                category: element.querySelector('.product-category').innerText
-
-            }
-
-            localStorage.setItem("savedProduct", JSON.stringify(savedInfoOfProduct));
+            const clearObj = getDataFromInputs(element);
+                  delete clearObj.imgSrc;
+    localStorage.setItem("savedProduct", JSON.stringify(clearObj));
 
             const body = document.querySelector('.modal-body form'),
                   modalName = body.querySelector('#editProductName'),
@@ -184,7 +203,7 @@ function EditDelHideButtons(){
                   modalCategory = body.querySelector('#editProductCategory');
 
             
-            const { name, subname, description, imgSrc, price, weight, category } = savedInfoOfProduct;
+            const { name, subname, description, imgSrc, price, weight, category } = getDataFromInputs(element);
 
                   modalName.value = name;
                   modalSubname.value = subname;
@@ -193,10 +212,12 @@ function EditDelHideButtons(){
                   modalPrice.value = price;
                   modalWeight.value = weight;
                   modalCategory.value = category;
+    
+}));
 
 
-    }));
 
+//Обработка событий "click" по кнопке "Скрыть / показать товар"
 
     Hide.forEach(btnHide => {
         btnHide.addEventListener('click', (e) => {
@@ -241,8 +262,33 @@ function EditDelHideButtons(){
                     alert('Ошибка при отправке запроса на сервер');
                 });
             }
-
         })
+    })
+
+
+
+    //Обработка событий "click" по кнопке "Отправить изменения о товаре"
+
+    ChangeForm.addEventListener('click', (e) => {
+        e.preventDefault();
+        const element = e.target.closest('form');
+        const currentProductInfo = getDataFromInputs(element);
+              delete currentProductInfo.imgSrc;
+        const defaultProductInfo = JSON.parse(localStorage.getItem('savedProduct'));
+        const formData = new FormData();
+
+        if(formFile.files[0]){
+            formData.append("image", formFile.files[0]);
+        }
+        for (const field in currentProductInfo) {
+            if (currentProductInfo[field] !== defaultProductInfo[field]) {
+                formData.append(field, currentProductInfo[field]);
+            }
+        }
+
+        console.log(formData);
+
+        
     })
 }
 

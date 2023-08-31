@@ -118,7 +118,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form id="changeInfoForm">
+                <form enctype="multipart/form-data" id="changeInfoForm">
                     <div class="mb-3">
                         <label for="editProductName" class="form-label">Название товара</label>
                         <input type="text" class="form-control" id="editProductName" placeholder="Введите название товара">
@@ -138,7 +138,7 @@
                             <input class="form-control" type="file" id="formFile" accept=".jpg, .jpeg, .png">
                         </div>
                         
-                        <div class="previewImage-container ms-5">
+                        <div class="border border-2 p-2 previewImage-container ms-5">
                             <img style="width: 100px;" src="#" alt="#" id="previewImage">
                         </div>
                         
@@ -157,13 +157,13 @@
                             <!-- Сюда будут добавлены опции -->
                         </select>
                     </div>
-                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-primary" id="saveChangesBtn">Сохранить изменения</button>
+                    </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                <button type="button" class="btn btn-primary" id="saveChangesBtn">Сохранить изменения</button>
-            </div>
+            
         </div>
     </div>
 </div>
