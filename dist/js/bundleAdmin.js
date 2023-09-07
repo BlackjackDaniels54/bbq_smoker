@@ -89,6 +89,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const TOKEN = document.cookie.substr(4);
+
 
 function clickTabs() {
     const tabs = document.querySelectorAll('#category-container a');
@@ -169,10 +171,11 @@ function EditDelHideButtons(){
                 
                 price: element.querySelector('#editProductPrice').value,
                 weight: element.querySelector('#editProductWeight').value,
-                category: element.querySelector('#editProductCategory').value
+                category_id: element.querySelector('#editProductCategory').value
             }
         }
         return {
+                id: element.querySelector('.product-id').innerText,
                 name: element.querySelector('.product-name').innerText,
                 subname: element.querySelector('.product-subname').innerText,
                 description: element.querySelector('.product-description').innerText,
@@ -180,7 +183,7 @@ function EditDelHideButtons(){
                 
                 price: element.querySelector('.product-price').innerText,
                 weight: element.querySelector('.product-weight').innerText,
-                category: element.querySelector('.product-category').innerText
+                category_id: element.querySelector('.product-category').innerText
         }
     }
 
@@ -194,6 +197,7 @@ function EditDelHideButtons(){
     localStorage.setItem("savedProduct", JSON.stringify(clearObj));
 
             const body = document.querySelector('.modal-body form'),
+                  
                   modalName = body.querySelector('#editProductName'),
                   modalSubname = body.querySelector('#editProductSubName'),
                   modalDescription = body.querySelector('#editProductDescription'),
@@ -219,51 +223,51 @@ function EditDelHideButtons(){
 
 //Обработка событий "click" по кнопке "Скрыть / показать товар"
 
-    Hide.forEach(btnHide => {
-        btnHide.addEventListener('click', (e) => {
-            e.target.innerText = '';
-            const isAvailable = Number(e.target.getAttribute('data-id-available'));
-            const productID = Number(e.target.getAttribute('data-id'));
-  
-            if(isAvailable){
-                fetch(`https://artichecker.com/BBQ-Smoker/api/toggleProductAvailability/${productID}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Authorization': 'Bearer IloveCocks'
-                    }
-                })
-                .then(function(data) {
-                    e.target.setAttribute('data-id-available', '0');
-                    e.target.classList.remove(...e.target.classList);
-                    e.target.classList.add('btn', 'btn-secondary', 'HideBtn', 'mt-2');
-                    e.target.innerText = 'Показать';
-                    console.log(e.target);
-                })
-                .catch(function(error) {
-                    alert('Ошибка при отправке запроса на сервер');
-                });
+Hide.forEach(btnHide => {
+    btnHide.addEventListener('click', (e) => {
+        e.target.innerText = '';
+        const isAvailable = Number(e.target.getAttribute('data-id-available'));
+        const productID = Number(e.target.getAttribute('data-id'));
+        console.log(document.cookie.substr(4));
+        if(isAvailable){
+            fetch(`https://artichecker.com/BBQ-Smoker/api/toggleProductAvailability/${productID}`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': 'Bearer ' + TOKEN
+                }
+            })
+            .then(function(data) {
+                e.target.setAttribute('data-id-available', '0');
+                e.target.classList.remove(...e.target.classList);
+                e.target.classList.add('btn', 'btn-secondary', 'HideBtn', 'mt-2');
+                e.target.innerText = 'Показать';
+                console.log(e.target);
+            })
+            .catch(function(error) {
+                alert('Ошибка при отправке запроса на сервер');
+            });
 
-            }else {
-                fetch(`https://artichecker.com/BBQ-Smoker/api/toggleProductAvailability/${productID}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Authorization': 'Bearer IloveCocks'
-                    }
-                })
-                .then(function(data) {
-                    
-                    e.target.setAttribute('data-id-available', '1');
-                    e.target.classList.remove(...e.target.classList);
-                    e.target.classList.add('btn', 'btn-success', 'HideBtn', 'mt-2');
-                    e.target.innerText = 'Скрыть';
-                    console.log(e.target);
-                })
-                .catch(function(error) {
-                    alert('Ошибка при отправке запроса на сервер');
-                });
-            }
-        })
+        }else {
+            fetch(`https://artichecker.com/BBQ-Smoker/api/toggleProductAvailability/${productID}`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': 'Bearer ' + TOKEN
+                }
+            })
+            .then(function(data) {
+                
+                e.target.setAttribute('data-id-available', '1');
+                e.target.classList.remove(...e.target.classList);
+                e.target.classList.add('btn', 'btn-success', 'HideBtn', 'mt-2');
+                e.target.innerText = 'Скрыть';
+                console.log(e.target);
+            })
+            .catch(function(error) {
+                alert('Ошибка при отправке запроса на сервер');
+            });
+        }
     })
+})
 
 
 
@@ -275,18 +279,34 @@ function EditDelHideButtons(){
         const currentProductInfo = getDataFromInputs(element);
               delete currentProductInfo.imgSrc;
         const defaultProductInfo = JSON.parse(localStorage.getItem('savedProduct'));
+        const productID = defaultProductInfo.id;
+
         const formData = new FormData();
+        
 
         if(formFile.files[0]){
             formData.append("image", formFile.files[0]);
         }
+        
         for (const field in currentProductInfo) {
             if (currentProductInfo[field] !== defaultProductInfo[field]) {
                 formData.append(field, currentProductInfo[field]);
             }
         }
 
-        console.log(formData);
+        console.log(Array.from(formData.entries()));
+
+        fetch(`https://artichecker.com/BBQ-Smoker/api/product/${productID}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + TOKEN
+            },
+            body: formData
+            
+        })
+        .then(res => alert(res))
+        .catch(e => alert(e));
+        
 
         
     })
